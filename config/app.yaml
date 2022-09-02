@@ -1,0 +1,54 @@
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    providers:
+        app_user_provider:
+            id: Sword\SwordBundle\Security\UserProvider
+    role_hierarchy:
+        customer: ROLE_USER
+        subscriber: customer
+        contributor: subscriber
+        author: contributor
+        editor: author
+        shop_manager: editor
+        administrator: shop_manager
+        ROLE_SUPER_ADMIN: [ administrator, ROLE_ALLOWED_TO_SWITCH ]
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            logout: true
+            provider: app_user_provider
+            entry_point: Sword\SwordBundle\Security\UserAuthenticator
+            custom_authenticator: Sword\SwordBundle\Security\UserAuthenticator
+    access_control:
+        - { path: ^/, role: PUBLIC_ACCESS }
+
+doctrine:
+    dbal:
+        dbname: '%env(auto_file:WORDPRESS_DB_NAME)%'
+        host: '%env(auto_file:WORDPRESS_DB_HOST)%'
+        user: '%env(auto_file:WORDPRESS_DB_USER)%'
+        password: '%env(auto_file:WORDPRESS_DB_PASSWORD)%'
+        charset: '%env(auto_file:WORDPRESS_DB_CHARSET)%'
+        driver: 'mysqli'
+        server_version: '8.0'
+        url: ~
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            SwordSecurity:
+                is_bundle: false
+                dir: '%kernel.project_dir%/vendor/phpsword/sword-bundle/src/Security'
+                prefix: 'Sword\SwordBundle\Security'
+                alias: SwordSecurity
+
+williarin_wordpress_interop:
+    entity_managers:
+        default:
+            connection: default

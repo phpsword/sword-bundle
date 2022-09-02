@@ -1,0 +1,88 @@
+{
+    "name": "phpsword/sword-bundle",
+    "description": "Modern WordPress development with Symfony",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "keywords": [
+        "wordpress",
+        "modern-wordpress",
+        "symfony",
+        "symfony-bundle"
+    ],
+    "authors": [
+        {
+            "name": "William Arin",
+            "email": "williamarin.dev@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "composer/composer": "^2.4.1",
+        "doctrine/doctrine-bundle": "^2.7",
+        "doctrine/orm": "^2.13",
+        "numberninecms/common": "^0.1.11",
+        "symfony/dependency-injection": "^6.1",
+        "symfony/framework-bundle": "^6.1",
+        "symfony/http-kernel": "^6.1",
+        "symfony/security-core": "^6.1",
+        "symfony/security-csrf": "^6.1",
+        "symfony/security-http": "^6.1",
+        "symfony/yaml": "^6.1",
+        "williarin/wordpress-interop": "^1.11",
+        "williarin/wordpress-interop-bundle": "^1.1.1",
+        "wp-cli/cache-command": "^2.0.9",
+        "wp-cli/checksum-command": "^2.1.2",
+        "wp-cli/config-command": "^2.1.3",
+        "wp-cli/core-command": "^2.1.2",
+        "wp-cli/cron-command": "^2.1",
+        "wp-cli/db-command": "^2.0.21",
+        "wp-cli/embed-command": "^2.0.11",
+        "wp-cli/entity-command": "^2.2.2",
+        "wp-cli/eval-command": "^2.1.2",
+        "wp-cli/export-command": "^2.0.12",
+        "wp-cli/extension-command": "^2.1.5",
+        "wp-cli/i18n-command": "^2.4",
+        "wp-cli/import-command": "^2.0.8",
+        "wp-cli/language-command": "^2.0.12",
+        "wp-cli/maintenance-mode-command": "^2.0.8",
+        "wp-cli/media-command": "^2.0.14",
+        "wp-cli/package-command": "^2.2",
+        "wp-cli/rewrite-command": "^2.0.10",
+        "wp-cli/role-command": "^2.0.9",
+        "wp-cli/scaffold-command": "^2.0.17",
+        "wp-cli/search-replace-command": "^2.0.17",
+        "wp-cli/server-command": "^2.0.11",
+        "wp-cli/shell-command": "^2.0.11",
+        "wp-cli/super-admin-command": "^2.0.10",
+        "wp-cli/widget-command": "^2.1.7",
+        "wp-cli/wp-cli": "^2.6"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.28.3",
+        "phpunit/phpunit": "^9.5.22",
+        "roave/security-advisories": "dev-latest"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Sword\\SwordBundle\\": "src/"
+        },
+        "files": [
+            "src/Helper/ContainerHelper.php"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    }
+}

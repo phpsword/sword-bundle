@@ -1,0 +1,81 @@
+#!/usr/bin/env php
+<?php
+
+use App\Kernel;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use WP_CLI\Autoloader;
+use WP_CLI\Bootstrap\BootstrapState;
+use WP_CLI\Bootstrap\BootstrapStep;
+use WP_CLI\Bootstrap\LoadDispatcher;
+use WP_CLI\Bootstrap\LoadUtilityFunctions;
+use WP_CLI\Bootstrap\DeclareFallbackFunctions;
+
+if (!is_file(dirname(__DIR__) . '/vendor/autoload_runtime.php')) {
+    throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');
+}
+
+if ($argc >= 2 && $argv[1] === 'wp') {
+    $bootstrapSteps = [
+        DeclareFallbackFunctions::class,
+        LoadUtilityFunctions::class,
+        LoadDispatcher::class,
+    ];
+
+    if (!defined('WP_CLI')) {
+        define('WP_CLI', true);
+    }
+    if (!defined('WP_CLI_ROOT')) {
+        define('WP_CLI_ROOT', dirname(__DIR__) . '/vendor/wp-cli/wp-cli');
+    }
+    if (!defined('WP_CLI_VERSION')) {
+        define('WP_CLI_VERSION', trim(file_get_contents(WP_CLI_ROOT . '/VERSION')));
+    }
+    if (!defined('WP_CLI_START_MICROTIME')) {
+        define('WP_CLI_START_MICROTIME', microtime(true));
+    }
+
+    if (!defined('WP_CLI_VENDOR_DIR')) {
+        if (file_exists(WP_CLI_ROOT . '/vendor/autoload.php')) {
+            define('WP_CLI_VENDOR_DIR', WP_CLI_ROOT . '/vendor');
+        } elseif (file_exists(dirname(WP_CLI_ROOT, 2) . '/autoload.php')) {
+            define('WP_CLI_VENDOR_DIR', dirname(WP_CLI_ROOT, 2));
+        } elseif (file_exists(dirname(WP_CLI_ROOT) . '/vendor/autoload.php')) {
+            define('WP_CLI_VENDOR_DIR', dirname(WP_CLI_ROOT) . '/vendor');
+        } else {
+            define('WP_CLI_VENDOR_DIR', WP_CLI_ROOT . '/vendor');
+        }
+    }
+
+    require_once WP_CLI_ROOT . '/php/compat.php';
+
+    $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
+    $_SERVER['HTTP_USER_AGENT'] = '';
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+    $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+
+    require_once WP_CLI_ROOT . '/php/WP_CLI/Autoloader.php';
+
+    $autoloader = new Autoloader();
+
+    $autoloader->add_namespace(
+        'WP_CLI\Bootstrap',
+        WP_CLI_ROOT . '/php/WP_CLI/Bootstrap'
+    )->register();
+
+    global $wpCliBootstrapState;
+    $wpCliBootstrapState = new BootstrapState();
+
+    foreach ($bootstrapSteps as $step) {
+        /** @var BootstrapStep $stepInstance */
+        $stepInstance = new $step();
+        $wpCliBootstrapState = $stepInstance->process($wpCliBootstrapState);
+    }
+}
+
+require_once dirname(__DIR__) . '/vendor/autoload_runtime.php';
+
+return function (array $context) {
+    $kernel = new Kernel($context['APP_ENV'], (bool)$context['APP_DEBUG']);
+
+    return new Application($kernel);
+};
