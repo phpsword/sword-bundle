@@ -8,7 +8,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class WooCommerceRegistrationEvent extends Event
 {
-    public function __construct(public readonly int $customerId, public readonly array $customerData)
-    {
+    public function __construct(
+        public readonly int $customerId,
+        public readonly array $customerData,
+    ) {
     }
 }

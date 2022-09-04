@@ -7,8 +7,8 @@ namespace Sword\SwordBundle\EventListener;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
-use Sword\SwordBundle\Entity\WordpressEntityInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Sword\SwordBundle\Entity\WordpressEntityInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class WordpressTablePrefixEventListener implements EventSubscriberInterface
@@ -19,9 +19,7 @@ final class WordpressTablePrefixEventListener implements EventSubscriberInterfac
 
     public function getSubscribedEvents(): array
     {
-        return [
-            Events::loadClassMetadata
-        ];
+        return [Events::loadClassMetadata];
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $args): void
@@ -34,9 +32,12 @@ final class WordpressTablePrefixEventListener implements EventSubscriberInterfac
 
         if (
             $classMetadata->getReflectionClass()
-            && $classMetadata->getReflectionClass()->implementsInterface(WordpressEntityInterface::class)
+            && $classMetadata->getReflectionClass()
+                ->implementsInterface(WordpressEntityInterface::class)
         ) {
-            $classMetadata->setPrimaryTable(['name' => $this->prefix . $classMetadata->getTableName()]);
+            $classMetadata->setPrimaryTable([
+                'name' => $this->prefix . $classMetadata->getTableName()
+            ]);
 
             foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
                 if ($mapping['type'] === ClassMetadataInfo::MANY_TO_MANY) {

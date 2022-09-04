@@ -1,0 +1,55 @@
+grumphp:
+    ascii:
+        failed: ~
+        succeeded: ~
+    tasks:
+        ecs:
+            files_on_pre_commit: true
+            no-progress-bar: true
+        composer:
+            no_check_lock: true
+            no_local_repository: true
+        composer_normalize:
+            indent_size: 4
+            indent_style: space
+        yamllint:
+            parse_custom_tags: true
+        phplint: ~
+        phpparser:
+            ignore_patterns:
+                - tests/bootstrap.php
+            visitors:
+                forbidden_function_calls:
+                    blacklist:
+                        - die
+                        - dd
+                        - dump
+                        - var_dump
+                        - print_r
+        git_commit_message:
+            allow_empty_message: false
+            enforce_capitalized_subject: false
+            max_subject_width: 120
+            max_body_width: 500
+            type_scope_conventions:
+                types:
+                    - build
+                    - ci
+                    - chore
+                    - docs
+                    - feat
+                    - fix
+                    - perf
+                    - refactor
+                    - style
+                    - test
+        git_blacklist:
+            keywords:
+                - 'die('
+                - ' dd('
+                - 'dump('
+                - 'var_dump('
+                - 'print_r('
+            whitelist_patterns: []
+            triggered_by: ['php']
+            regexp_type: G

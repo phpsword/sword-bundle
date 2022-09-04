@@ -10,26 +10,23 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use WP_CLI\Bootstrap\BootstrapStep;
-use WP_CLI\Bootstrap\DeclareMainClass;
-use WP_CLI\Bootstrap\DeclareAbstractBaseCommand;
-use WP_CLI\Bootstrap\IncludeFrameworkAutoloader;
 use WP_CLI\Bootstrap\ConfigureRunner;
-use WP_CLI\Bootstrap\InitializeColorization;
-use WP_CLI\Bootstrap\InitializeLogger;
+use WP_CLI\Bootstrap\DeclareAbstractBaseCommand;
+use WP_CLI\Bootstrap\DeclareMainClass;
 use WP_CLI\Bootstrap\DefineProtectedCommands;
+use WP_CLI\Bootstrap\IncludeFallbackAutoloader;
+use WP_CLI\Bootstrap\IncludeFrameworkAutoloader;
+use WP_CLI\Bootstrap\IncludePackageAutoloader;
+use WP_CLI\Bootstrap\InitializeColorization;
+use WP_CLI\Bootstrap\InitializeContexts;
+use WP_CLI\Bootstrap\InitializeLogger;
+use WP_CLI\Bootstrap\LaunchRunner;
 use WP_CLI\Bootstrap\LoadExecCommand;
 use WP_CLI\Bootstrap\LoadRequiredCommand;
-use WP_CLI\Bootstrap\IncludePackageAutoloader;
-use WP_CLI\Bootstrap\IncludeFallbackAutoloader;
-use WP_CLI\Bootstrap\RegisterFrameworkCommands;
 use WP_CLI\Bootstrap\RegisterDeferredCommands;
-use WP_CLI\Bootstrap\InitializeContexts;
-use WP_CLI\Bootstrap\LaunchRunner;
+use WP_CLI\Bootstrap\RegisterFrameworkCommands;
 
-#[AsCommand(
-    name: 'wp',
-    description: 'Run wp-cli commands',
-)]
+#[AsCommand(name: 'wp', description: 'Run wp-cli commands',)]
 class WpCommand extends Command
 {
     public function __construct(

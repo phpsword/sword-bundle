@@ -2,10 +2,10 @@
 
 namespace Sword\SwordBundle\Security;
 
-use Sword\SwordBundle\Entity\WordpressEntityInterface;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Sword\SwordBundle\Entity\WordpressEntityInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 

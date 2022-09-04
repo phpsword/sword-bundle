@@ -9,8 +9,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class ChildThemeTranslationInitializer extends AbstractWordpressService
 {
-    public function __construct(#[Autowire('%sword.child_theme_translation_domain%')] private readonly string $textDomain)
-    {
+    public function __construct(
+        #[Autowire('%sword.child_theme_translation_domain%')] private readonly string $textDomain,
+    ) {
     }
 
     public function initialize(): void

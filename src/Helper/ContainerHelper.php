@@ -33,7 +33,7 @@ function initialize_services(): void
 
     usort(
         $services,
-        static fn(WordpressService $a, WordpressService $b) => $b->getPriority() <=> $a->getPriority(),
+        static fn (WordpressService $a, WordpressService $b) => $b->getPriority() <=> $a->getPriority(),
     );
 
     foreach ($services as $service) {

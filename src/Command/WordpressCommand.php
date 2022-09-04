@@ -20,7 +20,7 @@ abstract class WordpressCommand extends WP_CLI_Command implements WordpressServi
 
     public function initialize(): void
     {
-        if(!(defined('WP_CLI') && WP_CLI)) {
+        if (!(defined('WP_CLI') && WP_CLI)) {
             return;
         }
 

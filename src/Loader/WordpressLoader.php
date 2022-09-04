@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Sword\SwordBundle\Loader;
 
+use Sword\SwordBundle\Event\WooCommerceRegistrationEvent;
 use Sword\SwordBundle\Exception\WordpressLoginSuccessfulException;
 use Sword\SwordBundle\Exception\WordpressLougoutSuccessfulException;
-use Sword\SwordBundle\Event\WooCommerceRegistrationEvent;
 use Sword\SwordBundle\Security\UserAuthenticator;
 use Sword\SwordBundle\Store\WordpressWidgetStore;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -107,15 +107,11 @@ final class WordpressLoader implements EventSubscriberInterface
     private function getAuthResponse(string $username, string $password, bool $rememberMe): RedirectResponse
     {
         $session = $this->requestStack->getSession();
-        $session->getFlashBag()->set(
-            'wp_login',
-            [
-                $username,
-                $password,
-                $rememberMe,
-                $this->csrfTokenManager->getToken('authenticate')->getValue(),
-            ],
-        );
+        $session->getFlashBag()
+            ->set(
+                'wp_login',
+                [$username, $password, $rememberMe, $this->csrfTokenManager->getToken('authenticate') ->getValue()],
+            );
 
         return new RedirectResponse($this->requestStack->getCurrentRequest()?->getRequestUri(), 302);
     }

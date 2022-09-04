@@ -65,7 +65,10 @@ final class SwordExtension extends ConfigurableExtension implements PrependExten
 
         $container->setParameter('sword.wordpress_core_dir', $mergedConfig['wordpress_core_dir']);
         $container->setParameter('sword.wordpress_content_dir', $mergedConfig['wordpress_content_dir']);
-        $container->setParameter('sword.child_theme_translation_domain', $mergedConfig['child_theme_translation_domain']);
+        $container->setParameter(
+            'sword.child_theme_translation_domain',
+            $mergedConfig['child_theme_translation_domain'],
+        );
         $container->setParameter('sword.table_prefix', $mergedConfig['table_prefix']);
         $container->setParameter('sword.public_services', $mergedConfig['public_services']);
         $container->setParameter('sword.widgets_path', $mergedConfig['widgets_path']);

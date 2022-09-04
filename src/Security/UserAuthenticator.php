@@ -101,7 +101,9 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
 
         $response = $logoutEvent->getResponse();
         if (!$response instanceof Response) {
-            $response = new RedirectResponse($this->urlGenerator->generate(Routes::WORDPRESS, ['path' => '']));
+            $response = new RedirectResponse($this->urlGenerator->generate(Routes::WORDPRESS, [
+                'path' => ''
+            ]));
         }
 
         $this->tokenStorage->setToken();
@@ -116,7 +118,9 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
 
     public function supports(Request $request): bool
     {
-        $data = $this->requestStack->getSession()->getFlashBag()->get('wp_login');
+        $data = $this->requestStack->getSession()
+            ->getFlashBag()
+            ->get('wp_login');
 
         if (!empty($data)) {
             [$this->wordpressUsername, $this->wordpressPassword, $this->wordpressRememberMe, $this->csrfToken] = $data;
@@ -178,7 +182,9 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
                 return new RedirectResponse($request->query->get('redirect_to'));
             }
 
-            return new RedirectResponse($this->urlGenerator->generate(Routes::WORDPRESS, ['path' => '']));
+            return new RedirectResponse($this->urlGenerator->generate(Routes::WORDPRESS, [
+'path' => ''
+]));
         }
 
         return null;

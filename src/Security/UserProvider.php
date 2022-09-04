@@ -8,9 +8,9 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Williarin\WordpressInterop\Bridge\Entity\Option;
+use Williarin\WordpressInterop\Bridge\Entity\User as InteropUser;
 use Williarin\WordpressInterop\Criteria\SelectColumns;
 use Williarin\WordpressInterop\EntityManagerInterface as InteropEntityManagerInterface;
-use Williarin\WordpressInterop\Bridge\Entity\User as InteropUser;
 
 class UserProvider implements UserProviderInterface
 {
@@ -24,7 +24,9 @@ class UserProvider implements UserProviderInterface
     public function loadUserByIdentifier($identifier): UserInterface
     {
         $user = $this->doctrine->getRepository(User::class)
-            ->findOneBy(['login' => $identifier]);
+            ->findOneBy([
+                'login' => $identifier
+            ]);
 
         $userInterop = $this->interop->getRepository(InteropUser::class)
             ->findOneBy([
@@ -67,6 +69,6 @@ class UserProvider implements UserProviderInterface
 
     public function supportsClass(string $class): bool
     {
-        return User::class === $class || is_subclass_of($class, User::class);
+        return $class === User::class || is_subclass_of($class, User::class);
     }
 }

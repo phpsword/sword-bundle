@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sword\SwordBundle\DependencyInjection\Compiler;
 
-use Sword\SwordBundle\Service\WordpressService;
 use Sword\SwordBundle\Store\WordpressWidgetStore;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
