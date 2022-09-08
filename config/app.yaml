@@ -48,6 +48,10 @@ doctrine:
                 prefix: 'Sword\SwordBundle\Security'
                 alias: SwordSecurity
 
+framework:
+    serializer:
+        name_converter: 'serializer.name_converter.camel_case_to_snake_case'
+
 williarin_wordpress_interop:
     entity_managers:
         default:

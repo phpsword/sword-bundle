@@ -1,0 +1,108 @@
+version: "3.8"
+
+services:
+    php:
+        build:
+            context: .
+            dockerfile: docker/dk.php.Dockerfile
+            args:
+                PHP_VERSION: 8.1-dev
+        restart: 'no'
+        environment:
+            WORDPRESS_SITE_URL: https://${APP_NAME:-sword}.localhost
+            WORDPRESS_DB_NAME: sword_app
+            WORDPRESS_DB_USER: user
+            WORDPRESS_DB_PASSWORD: user
+            WORDPRESS_DB_HOST: mysql
+            WORDPRESS_AUTH_KEY: ChangeMe
+            WORDPRESS_SECURE_AUTH_KEY: ChangeMe
+            WORDPRESS_LOGGED_IN_KEY: ChangeMe
+            WORDPRESS_NONCE_KEY: ChangeMe
+            WORDPRESS_AUTH_SALT: ChangeMe
+            WORDPRESS_SECURE_AUTH_SALT: ChangeMe
+            WORDPRESS_LOGGED_IN_SALT: ChangeMe
+            WORDPRESS_NONCE_SALT: ChangeMe
+            WORDPRESS_DEBUG: 'true'
+            WORDPRESS_DEBUG_DISPLAY: 'false'
+            WORDPRESS_CONFIG_EXTRA: define('WP_ENVIRONMENT_TYPE', 'development');
+        volumes:
+            - ./:/var/www/html
+            - ./docker/dev/php/config.ini:/etc/php81/conf.d/99_dev.ini:ro
+        extra_hosts:
+            - host.docker.internal:host-gateway
+
+    nginx:
+        build:
+            context: .
+            dockerfile: docker/dk.nginx.Dockerfile
+        restart: 'no'
+        volumes:
+            - ./public/:/var/www/html/public:ro
+            - ./wp/:/var/www/html/wp:ro
+        depends_on:
+            - php
+            - traefik
+        networks:
+            - default
+            - traefik
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.${APP_NAME:-sword}.rule=Host(`${APP_NAME:-sword}.localhost`)
+            - traefik.http.routers.${APP_NAME:-sword}.tls=true
+            - traefik.http.routers.${APP_NAME:-sword}.entrypoints=websecure
+            - traefik.http.services.${APP_NAME:-sword}.loadbalancer.server.port=80
+
+    mysql:
+        image: mysql:8
+        command: --default-authentication-plugin=mysql_native_password
+        restart: 'no'
+        environment:
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=user
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=sword_app
+        volumes:
+            - mysql_data:/var/lib/mysql
+
+    mailer:
+        image: maildev/maildev
+        restart: 'no'
+        networks:
+            - default
+            - traefik
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.${APP_NAME:-sword}-mail.rule=Host(`${APP_NAME:-sword}-mail.localhost`)
+            - traefik.http.routers.${APP_NAME:-sword}-mail.tls=true
+            - traefik.http.routers.${APP_NAME:-sword}-mail.entrypoints=websecure
+            - traefik.http.services.${APP_NAME:-sword}-mail.loadbalancer.server.port=1080
+            - traefik.tcp.routers.${APP_NAME:-sword}-smtp.rule=HostSNI(`${APP_NAME:-sword}-smtp.localhost`)
+            - traefik.tcp.routers.${APP_NAME:-sword}-smtp.entrypoints=smtpsecure
+            - traefik.tcp.routers.${APP_NAME:-sword}-smtp.tls=true
+            - traefik.tcp.routers.${APP_NAME:-sword}-smtp.service=${APP_NAME:-sword}-smtp
+            - traefik.tcp.services.${APP_NAME:-sword}-smtp.loadbalancer.server.port=1025
+
+    traefik:
+        image: traefik:2.8
+        ports:
+            - '443:443'
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        networks:
+            - traefik
+        command:
+            - --providers.docker
+            - --providers.docker.exposedbydefault=false
+            - --providers.docker.network=${PROJECT_DIR:-sword}_traefik
+            - --entrypoints.web.address=:80
+            - --entrypoints.web.http.redirections.entryPoint.to=websecure
+            - --entrypoints.web.http.redirections.entryPoint.scheme=https
+            - --entrypoints.websecure.address=:443
+            - --entrypoints.smtp.address=:25
+            - --entrypoints.smtpsecure.address=:465
+
+volumes:
+    mysql_data:
+
+networks:
+    traefik:
