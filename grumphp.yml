@@ -3,6 +3,7 @@ grumphp:
         failed: ~
         succeeded: ~
     tasks:
+        phpunit: ~
         ecs:
             files_on_pre_commit: true
             no-progress-bar: true

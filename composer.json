@@ -79,6 +79,11 @@
             "src/Helper/ContainerHelper.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Sword\\SwordBundle\\Test\\": "tests/"
+        }
+    },
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true,
