@@ -52,3 +52,106 @@ jobs:
 
             -   name: Launch test suite
                 run: make test
+
+    project_installation_docker:
+        name: New project installation
+
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                php: [ '8.1' ]
+                symfony: [ '6.1' ]
+
+        steps:
+            -   uses: FranzDiebold/github-env-vars-action@v2
+
+            -   uses: actions/checkout@v3
+                with:
+                    path: temp/sword-bundle
+
+            -   name: Create temporary branch alias for master and feature branches
+                if: github.ref != 'refs/heads/master' && !startsWith(github.ref, 'refs/pull/')
+                run: |
+                    cd temp/sword-bundle
+                    composer config --unset extra.branch-alias.dev-master
+                    composer config extra.branch-alias.dev-$CI_REF_NAME_SLUG 1.x-dev
+
+            -   name: Create temporary branch alias for pull requests
+                if: startsWith(github.ref, 'refs/pull/')
+                run: |
+                    cd temp/sword-bundle
+                    composer config --unset extra.branch-alias.dev-master
+                    composer config extra.branch-alias.dev-$CI_SHA 1.x-dev
+
+            -   name: Setup PHP
+                id: setup-php
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    extensions: dom, curl, libxml, mbstring, zip, redis, sysvsem
+                    tools: composer:v2, symfony
+                    coverage: none
+                env:
+                    COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Create a new project
+                run: |
+                    git config --global user.email "no-reply@getsword.com"
+                    git config --global user.name "Sword"
+                    symfony new newproject --webapp --version="${{ matrix.symfony }}"
+                    cd newproject
+                    cp -Rp . ../
+                    cd ..
+                    rm -rf newproject
+                    rm composer.lock
+                    rm docker-compose*
+                    echo "APP_NAME=sword" >> .env
+                    echo "PROJECT_DIR=${PWD##*/}" >> .env
+                    echo "MAILER_DSN=smtp://mailer:25" >> .env
+                    composer config --no-interaction minimum-stability dev
+                    composer config --no-interaction prefer-stable true
+                    composer config --no-interaction repositories.0 '{"type": "composer", "url": "https://wpackagist.org", "only": ["wpackagist-plugin/*", "wpackagist-theme/*"]}'
+                    composer config --no-interaction repositories.1 path ./temp/sword-bundle
+                    composer config --no-interaction allow-plugins.composer/installers true
+                    composer config --no-interaction allow-plugins.composer/package-versions-deprecated true
+                    composer config --no-interaction allow-plugins.johnpbloch/wordpress-core-installer true
+                    composer config --no-interaction allow-plugins.ergebnis/composer-normalize true
+                    composer config --no-interaction --json extra.installer-paths.wp/content/plugins/{\$name}/ '["type:wordpress-plugin"]'
+                    composer config --no-interaction --json extra.installer-paths.wp/content/themes/{\$name}/ '["type:wordpress-theme"]'
+                    composer config --no-interaction extra.symfony.allow-contrib true
+                    composer config --no-interaction extra.symfony.endpoint "https://raw.githubusercontent.com/symfony/recipes-contrib/flex/pull-1433/index.json"
+                    composer config --no-interaction extra.wordpress-install-dir "wp/core"
+                    composer require --no-interaction phpsword/sword-bundle johnpbloch/wordpress wpackagist-plugin/akismet wpackagist-theme/twentytwentytwo
+                    composer require --no-interaction --dev ergebnis/composer-normalize roave/security-advisories:dev-latest
+                    composer normalize --no-interaction
+                    rm bin/console
+                    cp vendor/phpsword/sword-bundle/install/bin/console bin/console
+                    
+                    # Remove symlink and copy actual files so it gets copied later in the installer image
+                    rm vendor/phpsword/sword-bundle
+                    cd ./temp/sword-bundle
+                    cp -Rp . ../../vendor/phpsword/sword-bundle
+                    cd ../..
+
+            -   name: Build Docker installer
+                run: |
+                    wget https://raw.githubusercontent.com/phpsword/installer/master/.dockerignore
+                    mkdir build
+                    wget -O build/Dockerfile https://raw.githubusercontent.com/phpsword/installer/master/build/Dockerfile
+                    wget -O build/docker-entrypoint.sh https://raw.githubusercontent.com/phpsword/installer/master/build/docker-entrypoint.sh
+                    docker build --no-cache -t projectinstaller:latest -f ./build/Dockerfile .
+
+            -   name: Create Docker environment
+                run: |
+                    docker run --rm -t -e HOST_PWD="$PWD" \
+                        -v "$PWD":/app -v /var/run/docker.sock:/var/run/docker.sock \
+                        projectinstaller testproject -v
+                    sleep 20
+
+            -   name: Check that website is up and running
+                run: |
+                    wget --no-check-certificate -O- https://testproject.localhost/
+                    url=$(curl https://testproject.localhost -k -s -L -I -o /dev/null -w '%{url_effective}')
+                    echo $url
+                    [ "$url" = "https://testproject.localhost/wp-admin/install.php" ]
