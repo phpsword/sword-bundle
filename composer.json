@@ -23,6 +23,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/orm": "^2.13",
         "numberninecms/common": "^0.1.11",
+        "roots/wp-password-bcrypt": "^1.1.0",
         "symfony/dependency-injection": "^6.1",
         "symfony/framework-bundle": "^6.1",
         "symfony/http-kernel": "^6.1",
