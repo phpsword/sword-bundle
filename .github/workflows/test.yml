@@ -16,7 +16,7 @@ jobs:
     test:
         name: Test
 
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
 
         strategy:
             matrix:
@@ -60,8 +60,8 @@ jobs:
 
         strategy:
             matrix:
-                php: [ '8.1' ]
-                symfony: [ '6.1' ]
+                php: ['8.1']
+                symfony: ['6.1']
 
         steps:
             -   uses: FranzDiebold/github-env-vars-action@v2
