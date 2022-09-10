@@ -10,11 +10,11 @@ final class AutoFileEnvVarProcessor implements EnvVarProcessorInterface
 {
     public function getEnv(string $prefix, string $name, \Closure $getEnv): string|array|bool|null
     {
-        if ($fileEnv = $getEnv($name . '_FILE')) {
+        if ($fileEnv = getenv($name . '_FILE')) {
             return rtrim(file_get_contents($fileEnv), "\r\n");
         }
 
-        if (($val = $getEnv($name)) !== false) {
+        if (($val = getenv($name)) !== false) {
             return $val;
         }
 

@@ -6,7 +6,6 @@ namespace Sword\SwordBundle\Test\EnvVarProcessor;
 
 use PHPUnit\Framework\TestCase;
 use Sword\SwordBundle\EnvVarProcessor\AutoFileEnvVarProcessor;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class AutoFileEnvVarProcessorTest extends TestCase
 {
@@ -21,6 +20,8 @@ class AutoFileEnvVarProcessorTest extends TestCase
 
     protected function tearDown(): void
     {
+        putenv('FOO');
+        putenv('FOO_FILE');
         if (file_exists(self::ENV_VAR_FILE)) {
             unlink(self::ENV_VAR_FILE);
         }
@@ -28,25 +29,14 @@ class AutoFileEnvVarProcessorTest extends TestCase
 
     /**
      * @dataProvider validValues
-     * @covers ::getEnv
      */
     public function testGetEnvFile($value, $expected): void
     {
         file_put_contents(self::ENV_VAR_FILE, $value);
+        putenv('FOO_FILE=' . self::ENV_VAR_FILE);
 
-        $container = new ContainerBuilder();
-        $container->setParameter('env(FOO_FILE)', self::ENV_VAR_FILE);
-        $container->compile();
-
-        $processor = new AutoFileEnvVarProcessor($container);
-
-        $result = $processor->getEnv('auto_file', 'FOO', function ($name) {
-            if ($name === 'FOO_FILE') {
-                return self::ENV_VAR_FILE;
-            }
-
-            $this->fail('This should not happen.');
-        });
+        $processor = new AutoFileEnvVarProcessor();
+        $result = $processor->getEnv('auto_file', 'FOO', static fn () => null);
 
         $this->assertSame((string) $expected, $result);
     }
@@ -57,23 +47,10 @@ class AutoFileEnvVarProcessorTest extends TestCase
      */
     public function testGetEnvValue($value, $expected): void
     {
-        $container = new ContainerBuilder();
-        $container->setParameter('env(FOO)', $value);
-        $container->compile();
+        putenv('FOO=' . $value);
 
-        $processor = new AutoFileEnvVarProcessor($container);
-
-        $result = $processor->getEnv('auto_file', 'FOO', function ($name) use ($value) {
-            if ($name === 'FOO_FILE') {
-                return null;
-            }
-
-            if ($name === 'FOO') {
-                return $value;
-            }
-
-            $this->fail('This should not happen.');
-        });
+        $processor = new AutoFileEnvVarProcessor();
+        $result = $processor->getEnv('auto_file', 'FOO', static fn () => null);
 
         $this->assertSame($expected, $result);
     }
@@ -84,8 +61,8 @@ class AutoFileEnvVarProcessorTest extends TestCase
             ['some_value', 'some_value'],
             ['135', '135'],
             ['true', 'true'],
-            [null, null],
-            [false, null],
+            ['', ''],
+            [false, ''],
         ];
     }
 
