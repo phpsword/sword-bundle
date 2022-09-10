@@ -183,8 +183,8 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
             }
 
             return new RedirectResponse($this->urlGenerator->generate(Routes::WORDPRESS, [
-'path' => ''
-]));
+                'path' => ''
+            ]));
         }
 
         return null;
