@@ -1,4 +1,4 @@
-![Sword Logo](assets/sword-logo-tagline-sm.png)
+![Sword Logo](/assets/sword-logo-tagline-sm.png)
 
 <br>
 
