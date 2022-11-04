@@ -2,6 +2,7 @@
 
 namespace Sword\SwordBundle\DependencyInjection;
 
+use Doctrine\Bundle\DoctrineBundle\Dbal\RegexSchemaAssetFilter;
 use NumberNine\Common\Bundle\MergeConfigurationTrait;
 use Sword\SwordBundle\Service\WordpressService;
 use Symfony\Component\Config\FileLocator;
@@ -80,5 +81,11 @@ final class SwordExtension extends ConfigurableExtension implements PrependExten
             ;
             $loader->registerClasses($definition, $mergedConfig['widgets_namespace'], $mergedConfig['widgets_path']);
         }
+
+        $definition = new Definition(RegexSchemaAssetFilter::class, ['~^(?!(%sword.table_prefix%))~']);
+        $definition->addTag('doctrine.dbal.schema_filter', [
+            'connection' => 'default',
+        ]);
+        $container->setDefinition('doctrine.dbal.default_regex_schema_filter', $definition);
     }
 }
