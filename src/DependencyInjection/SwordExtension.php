@@ -33,8 +33,8 @@ final class SwordExtension extends ConfigurableExtension implements PrependExten
                 continue;
             }
 
-            if (in_array($name, $prioritizedConfigNames, true)) {
-                if (!array_key_exists($name, $prioritizedConfigs)) {
+            if (\in_array($name, $prioritizedConfigNames, true)) {
+                if (!\array_key_exists($name, $prioritizedConfigs)) {
                     $prioritizedConfigs[$name] = [];
                 }
 

@@ -28,7 +28,7 @@ final class LazyServiceInstantiator
         $prefix = 'App\\';
         $baseDir = $this->projectDirectory . '/src/';
 
-        $length = strlen($prefix);
+        $length = \strlen($prefix);
 
         if (strncmp($prefix, $class, $length) !== 0) {
             return;

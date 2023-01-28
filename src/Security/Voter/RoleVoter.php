@@ -27,7 +27,7 @@ final class RoleVoter implements VoterInterface
         foreach ($attributes as $attribute) {
             $result = VoterInterface::ACCESS_DENIED;
 
-            if (in_array($attribute, $this->roleHierarchy->getReachableRoleNames($user->getRoles()), true)) {
+            if (\in_array($attribute, $this->roleHierarchy->getReachableRoleNames($user->getRoles()), true)) {
                 return VoterInterface::ACCESS_GRANTED;
             }
         }

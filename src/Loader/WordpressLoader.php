@@ -68,11 +68,7 @@ final class WordpressLoader implements EventSubscriberInterface
 
         $entryPoint = $this->wordpressDirectory . '/index.php';
 
-        if (in_array(basename($urlPathName), [
-            'wp-login.php',
-            'wp-signup.php',
-            'wp-comments-post.php',
-        ], true)) {
+        if (\in_array(basename($urlPathName), ['wp-login.php', 'wp-signup.php', 'wp-comments-post.php'], true)) {
             $_SERVER['PHP_SELF'] = '/' . basename($urlPathName);
             $entryPoint = $this->wordpressDirectory . '/' . basename($urlPathName);
         } elseif (str_starts_with($urlPathName, 'wp-admin/')) {

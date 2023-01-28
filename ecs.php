@@ -2,14 +2,20 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\Basic\NoTrailingCommaInSinglelineFixer;
 use PhpCsFixer\Fixer\ControlStructure\YodaStyleFixer;
+use PhpCsFixer\Fixer\FunctionNotation\NativeFunctionInvocationFixer;
 use PhpCsFixer\Fixer\Import\NoUnusedImportsFixer;
 use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use PhpCsFixer\Fixer\Operator\ConcatSpaceFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesOrderFixer;
+use PhpCsFixer\Fixer\Whitespace\ArrayIndentationFixer;
+use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
 use PhpCsFixerCustomFixers\Fixer\NoDuplicatedImportsFixer;
+use Symplify\CodingStandard\Fixer\ArrayNotation\StandaloneLineInMultilineArrayFixer;
 use Symplify\CodingStandard\Fixer\LineLength\DocBlockLineLengthFixer;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
+use Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
@@ -58,6 +64,13 @@ return static function (ECSConfig $ecsConfig): void {
     $ecsConfig->ruleWithConfiguration(LineLengthFixer::class, [
         LineLengthFixer::LINE_LENGTH => 120,
     ]);
+
+    $ecsConfig->rule(NativeFunctionInvocationFixer::class);
+    $ecsConfig->rule(NoTrailingCommaInSinglelineFixer::class);
+    $ecsConfig->rule(MethodChainingNewlineFixer::class);
+    $ecsConfig->rule(MethodChainingIndentationFixer::class);
+    $ecsConfig->rule(StandaloneLineInMultilineArrayFixer::class);
+    $ecsConfig->rule(ArrayIndentationFixer::class);
 
     $ecsConfig->rule(NoUnusedImportsFixer::class);
     $ecsConfig->rule(NoDuplicatedImportsFixer::class);
