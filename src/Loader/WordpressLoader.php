@@ -23,14 +23,17 @@ final class WordpressLoader implements EventSubscriberInterface
     private ?array $auth = null;
 
     public function __construct(
-        #[Autowire('@service_container')] public readonly Container $container,
-        #[TaggedIterator('sword.wordpress_service')] public readonly iterable $wordpressServices,
+        #[Autowire('@service_container')]
+        public readonly Container $container,
+        #[TaggedIterator('sword.wordpress_service')]
+        public readonly iterable $wordpressServices,
         public readonly WordpressWidgetStore $widgetStore,
         public readonly LazyServiceInstantiator $lazyServiceInstantiator,
         private readonly RequestStack $requestStack,
         private readonly UserAuthenticator $userAuthenticator,
         private readonly CsrfTokenManagerInterface $csrfTokenManager,
-        #[Autowire('%sword.wordpress_core_dir%')] private readonly string $wordpressDirectory,
+        #[Autowire('%sword.wordpress_core_dir%')]
+        private readonly string $wordpressDirectory,
     ) {
     }
 
@@ -65,9 +68,13 @@ final class WordpressLoader implements EventSubscriberInterface
 
         $entryPoint = $this->wordpressDirectory . '/index.php';
 
-        if (str_starts_with($urlPathName, 'wp-login.php')) {
+        if (in_array(basename($urlPathName), [
+            'wp-login.php',
+            'wp-signup.php',
+            'wp-comments-post.php',
+        ], true)) {
             $_SERVER['PHP_SELF'] = '/' . basename($urlPathName);
-            $entryPoint = $this->wordpressDirectory . '/wp-login.php';
+            $entryPoint = $this->wordpressDirectory . '/' . basename($urlPathName);
         } elseif (str_starts_with($urlPathName, 'wp-admin/')) {
             if ($urlPathName === 'wp-admin/') {
                 $urlPathName = 'wp-admin/index.php';
