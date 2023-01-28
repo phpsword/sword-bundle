@@ -54,7 +54,7 @@ services:
             - mysql_data:/var/lib/mysql
 
     traefik:
-        image: traefik:2.8
+        image: traefik:2.9
         ports:
             - '443:443'
         volumes:
