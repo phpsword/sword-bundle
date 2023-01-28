@@ -126,7 +126,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
             [$this->wordpressUsername, $this->wordpressPassword, $this->wordpressRememberMe, $this->csrfToken] = $data;
         }
 
-        return $this->wordpressUsername && $this->wordpressPassword && in_array(
+        return $this->wordpressUsername && $this->wordpressPassword && \in_array(
             $request->getPathInfo(),
             [$this->getLoginUrl($request), '/wp-login.php'],
             true,

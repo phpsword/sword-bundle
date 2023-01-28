@@ -51,10 +51,10 @@ class WpCommand extends Command
             global $$global;
         }
 
-        $argv = array_slice($argv, 1, $argc - 1);
+        $argv = \array_slice($argv, 1, $argc - 1);
         $argv[] = sprintf('--path=%s', $this->wordpressDirectory);
         $argv = array_unique($argv);
-        $argc = count($argv);
+        $argc = \count($argv);
 
         foreach ($this->getBootstrapStates() as $step) {
             /** @var BootstrapStep $stepInstance */

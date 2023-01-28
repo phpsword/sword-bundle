@@ -41,7 +41,7 @@ class UserProvider implements UserProviderInterface
         $userCapabilities = [];
 
         foreach (array_keys($userInterop->capabilities->data, true) as $capability) {
-            if (array_key_exists($capability, $wordpressRoles)) {
+            if (\array_key_exists($capability, $wordpressRoles)) {
                 $userRoles[] = $capability;
                 $userCapabilities = [...$userCapabilities, ...array_keys(
                     $wordpressRoles[$capability]['capabilities'],
@@ -61,7 +61,7 @@ class UserProvider implements UserProviderInterface
     public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$user instanceof User) {
-            throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
+            throw new UnsupportedUserException(sprintf('Invalid user class "%s".', \get_class($user)));
         }
 
         return $this->loadUserByIdentifier($user->getUserIdentifier());
