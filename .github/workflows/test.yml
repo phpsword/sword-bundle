@@ -115,8 +115,8 @@ jobs:
                     echo "MAILER_DSN=smtp://mailer:25" >> .env
                     composer config --no-interaction minimum-stability dev
                     composer config --no-interaction prefer-stable true
-                    composer config --no-interaction repositories.0 '{"type": "composer", "url": "https://wpackagist.org", "only": ["wpackagist-plugin/*", "wpackagist-theme/*"]}'
-                    composer config --no-interaction repositories.1 path ./temp/sword-bundle
+                    composer config --no-interaction repositories.wordpress '{"type": "composer", "url": "https://wpackagist.org", "only": ["wpackagist-plugin/*", "wpackagist-theme/*"]}'
+                    composer config --no-interaction repositories.sword path ./temp/sword-bundle
                     composer config --no-interaction allow-plugins.composer/installers true
                     composer config --no-interaction allow-plugins.composer/package-versions-deprecated true
                     composer config --no-interaction allow-plugins.johnpbloch/wordpress-core-installer true
