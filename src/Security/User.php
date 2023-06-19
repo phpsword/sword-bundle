@@ -13,7 +13,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table('users')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, WordpressEntityInterface
 {
-    #[ORM\Id, ORM\GeneratedValue(strategy: 'AUTO'), ORM\Column(name: 'ID', type: 'bigint')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(name: 'ID', type: 'bigint', options: [
+        'unsigned' => true
+    ])]
     protected ?int $id = null;
 
     #[ORM\Column(name: 'user_login', type: 'string', length: 60)]
