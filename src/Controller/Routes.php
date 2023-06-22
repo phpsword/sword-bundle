@@ -7,4 +7,5 @@ namespace Sword\SwordBundle\Controller;
 final class Routes
 {
     public const WORDPRESS = 'sword_wordpress';
+    public const REAUTHENTICATE = 'sword_reauthenticate';
 }
