@@ -18,6 +18,7 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('child_theme_translation_domain')->isRequired()->end()
                 ->scalarNode('child_theme_language_path')->defaultValue('%kernel.project_dir%/translations/%sword.child_theme_translation_domain%')->end()
                 ->scalarNode('table_prefix')->defaultValue('wp_')->end()
+                ->scalarNode('app_namespace')->defaultValue('App\\')->end()
                 ->scalarNode('widgets_namespace')->defaultValue('App\\Widget\\')->end()
                 ->scalarNode('widgets_path')->defaultValue('%kernel.project_dir%/src/Widget/')->end()
                 ->arrayNode('public_services')

@@ -107,6 +107,23 @@ final class WordpressLoader implements EventSubscriberInterface
         return new Response(ob_get_clean(), is_404() ? 404 : 200);
     }
 
+    public function loadWordpress(): void
+    {
+        $url = '/wp-load.php';
+        $request = $this->requestStack->getCurrentRequest();
+
+        global $wordpressLoader;
+        $wordpressLoader = $this;
+
+        foreach (WordpressGlobals::GLOBALS as $global) {
+            global $$global;
+        }
+
+        $entryPoint = $this->wordpressDirectory . '/wp-load.php';
+
+        require_once $entryPoint;
+    }
+
     private function getAuthResponse(string $username, string $password, bool $rememberMe): RedirectResponse
     {
         $session = $this->requestStack->getSession();
