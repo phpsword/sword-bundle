@@ -30,8 +30,12 @@ final class ReauthenticateController extends AbstractController
         ServiceLocator $managersLocator,
     ): Response {
         $response = $request->headers->get('referer') === $request->getRequestUri()
-            ? $this->redirectToRoute(Routes::WORDPRESS)
-            : $this->redirect($request->headers->get('referer'));
+            ? $this->redirectToRoute(Routes::WORDPRESS, [
+                'path' => ''
+            ])
+            : $this->redirect($request->headers->get('referer') ?: $this->generateUrl(Routes::WORDPRESS, [
+                'path' => ''
+            ]));
 
         $wordpressLoader->loadWordpress();
 
