@@ -52,7 +52,7 @@ final class WordpressLoggedInStatusCheckEventSubscriber implements EventSubscrib
 
             if (!is_user_logged_in()) {
                 $response = new RedirectResponse($event->getRequest()->getRequestUri());
-                $response->headers->removeCookie($cookieName);
+                $response->headers->clearCookie($cookieName);
                 $event->setResponse($response);
 
                 return;
