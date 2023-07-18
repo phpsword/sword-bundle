@@ -6,19 +6,19 @@ namespace Sword\SwordBundle\EventListener;
 
 use Sword\SwordBundle\Controller\Routes;
 use Sword\SwordBundle\Loader\WordpressLoader;
+use Sword\SwordBundle\Security\UserReauthenticator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 final class WordpressLoggedInStatusCheckEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly TokenStorageInterface $tokenStorage,
-        private readonly UrlGeneratorInterface $urlGenerator,
         private readonly WordpressLoader $wordpressLoader,
+        private readonly UserReauthenticator $userReauthenticator,
         #[Autowire('%sword.app_namespace%')]
         private readonly string $appNamespace,
     ) {
@@ -58,7 +58,8 @@ final class WordpressLoggedInStatusCheckEventSubscriber implements EventSubscrib
                 return;
             }
 
-            $event->setResponse(new RedirectResponse($this->urlGenerator->generate(Routes::REAUTHENTICATE)));
+            $this->userReauthenticator->reauthenticate();
+            $event->setResponse(new RedirectResponse($event->getRequest()->getRequestUri()));
         }
     }
 }
