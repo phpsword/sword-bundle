@@ -109,9 +109,6 @@ final class WordpressLoader implements EventSubscriberInterface
 
     public function loadWordpress(): void
     {
-        $url = '/wp-load.php';
-        $request = $this->requestStack->getCurrentRequest();
-
         global $wordpressLoader;
         $wordpressLoader = $this;
 
@@ -119,9 +116,7 @@ final class WordpressLoader implements EventSubscriberInterface
             global $$global;
         }
 
-        $entryPoint = $this->wordpressDirectory . '/wp-load.php';
-
-        require_once $entryPoint;
+        require_once $this->wordpressDirectory . '/wp-load.php';
     }
 
     private function getAuthResponse(string $username, string $password, bool $rememberMe): RedirectResponse
