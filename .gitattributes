@@ -1,0 +1,11 @@
+/.github/ export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/Makefile export-ignore
+/assets/ export-ignore
+/composer.lock export-ignore
+/ecs.php export-ignore
+/grumphp.yml export-ignore
+/install/ export-ignore
+/phpunit.xml export-ignore
+/tests/ export-ignore
