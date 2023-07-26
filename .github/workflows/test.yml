@@ -17,6 +17,26 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
+    byte_level:
+        name: Byte-level
+
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v3
+
+            -   name: Check file permissions
+                run: |
+                    test "$(find ./ -type f -not -path './.git/*' -executable)" = "./install/bin/console"
+
+            -   name: Check for byte order mark (BOM)
+                run: |
+                    ! git grep --perl-regexp -I -e '^\xEF\xBB\xBF'
+
+            -   name: Find non-printable ASCII characters
+                run: |
+                    ! LC_ALL=C.UTF-8 git grep --perl-regexp --line-number -e '[^ -~]' -- '*\.php'
+
     test:
         name: Test
 
