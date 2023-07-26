@@ -177,14 +177,33 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        $redirectPath = $this->getRedirectPath($request);
+
         if ($request->getPathInfo() === '/wp-login.php') {
-            if ($request->query->has('redirect_to')) {
-                return new RedirectResponse($request->query->get('redirect_to'));
+            if ($redirectPath) {
+                return new RedirectResponse($redirectPath);
             }
 
             return new RedirectResponse($this->urlGenerator->generate(Routes::WORDPRESS, [
                 'path' => ''
             ]));
+        }
+
+        return $redirectPath
+            ? new RedirectResponse($redirectPath)
+            : null;
+    }
+
+    private function getRedirectPath(Request $request): ?string
+    {
+        $referer = $request->headers->get('referer');
+
+        if ($referer && ($queryString = parse_url($referer, PHP_URL_QUERY))) {
+            parse_str($queryString, $result);
+
+            if (!empty($result['redirect_to'])) {
+                return $result['redirect_to'];
+            }
         }
 
         return null;
