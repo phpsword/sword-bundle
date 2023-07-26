@@ -1,5 +1,4 @@
-.git
-.idea
-vendor
-var
+/.idea/
+/vendor/
+/var/
 .phpunit.result.cache
