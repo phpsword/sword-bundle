@@ -18,10 +18,6 @@ final class AutoFileEnvVarProcessor implements EnvVarProcessorInterface
             return $val;
         }
 
-        if (isset($_SERVER[$name]) && !empty($_SERVER[$name])) {
-            return $_SERVER[$name];
-        }
-
         return null;
     }
 

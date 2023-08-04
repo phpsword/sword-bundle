@@ -33,10 +33,6 @@ if (!function_exists('getenv_docker')) {
             return $val;
         }
 
-        if (isset($_SERVER[$env]) && !empty($_SERVER[$env])) {
-            return $_SERVER[$env];
-        }
-
         return $default;
     }
 }
