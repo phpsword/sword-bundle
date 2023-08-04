@@ -15,10 +15,6 @@ final class SwordBundle extends Bundle
         return \dirname(__DIR__);
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @return void
-     */
     public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new WordpressPass());
