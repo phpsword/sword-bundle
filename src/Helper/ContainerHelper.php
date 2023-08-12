@@ -7,6 +7,11 @@ namespace Sword\SwordBundle\Helper;
 use Sword\SwordBundle\Loader\WordpressLoader;
 use Sword\SwordBundle\Service\WordpressService;
 
+/**
+ * @template T
+ * @param class-string<T> $serviceId
+ * @return T
+ */
 function get_symfony_service(string $serviceId): mixed
 {
     /** @var WordpressLoader $wordpressLoader */
