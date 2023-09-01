@@ -27,6 +27,7 @@
         "symfony/framework-bundle": "^6.1",
         "symfony/http-kernel": "^6.1",
         "symfony/security-bundle": "^6.1",
+        "symfony/translation": "^6.1",
         "symfony/yaml": "^6.1",
         "williarin/wordpress-interop": "^1.11",
         "williarin/wordpress-interop-bundle": "^1.1.1",
