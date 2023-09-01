@@ -9,8 +9,9 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 
 final class RoleVoter implements VoterInterface
 {
-    public function __construct(private readonly RoleHierarchyInterface $roleHierarchy)
-    {
+    public function __construct(
+        private readonly RoleHierarchyInterface $roleHierarchy
+    ) {
     }
 
     public function vote(TokenInterface $token, $subject, array $attributes): int

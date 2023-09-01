@@ -9,8 +9,9 @@ use Symfony\Component\Translation\LocaleSwitcher as SymfonyLocaleSwitcher;
 
 final class LocaleSwitcher extends AbstractWordpressService
 {
-    public function __construct(private readonly SymfonyLocaleSwitcher $localeSwitcher)
-    {
+    public function __construct(
+        private readonly SymfonyLocaleSwitcher $localeSwitcher
+    ) {
     }
 
     public function getPriority(): int

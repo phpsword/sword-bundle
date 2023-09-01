@@ -13,7 +13,6 @@ use PhpCsFixer\Fixer\Whitespace\ArrayIndentationFixer;
 use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
 use PhpCsFixerCustomFixers\Fixer\NoDuplicatedImportsFixer;
 use Symplify\CodingStandard\Fixer\ArrayNotation\StandaloneLineInMultilineArrayFixer;
-use Symplify\CodingStandard\Fixer\LineLength\DocBlockLineLengthFixer;
 use Symplify\CodingStandard\Fixer\LineLength\LineLengthFixer;
 use Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
@@ -36,10 +35,6 @@ return static function (ECSConfig $ecsConfig): void {
         SetList::PSR_12,
         SetList::DOCTRINE_ANNOTATIONS,
         SetList::CLEAN_CODE,
-    ]);
-
-    $ecsConfig->ruleWithConfiguration(DocBlockLineLengthFixer::class, [
-        DocBlockLineLengthFixer::LINE_LENGTH => 120,
     ]);
 
     $ecsConfig->ruleWithConfiguration(YodaStyleFixer::class, [

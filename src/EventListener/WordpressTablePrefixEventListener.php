@@ -13,8 +13,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class WordpressTablePrefixEventListener implements EventSubscriberInterface
 {
-    public function __construct(#[Autowire('%sword.table_prefix%')] private readonly string $prefix)
-    {
+    public function __construct(
+        #[Autowire('%sword.table_prefix%')] private readonly string $prefix
+    ) {
     }
 
     public function getSubscribedEvents(): array
