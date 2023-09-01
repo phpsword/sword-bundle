@@ -8,8 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class WordpressLougoutSuccessfulException extends \Exception
 {
-    public function __construct(public readonly Response $response)
-    {
+    public function __construct(
+        public readonly Response $response
+    ) {
         parent::__construct();
     }
 }

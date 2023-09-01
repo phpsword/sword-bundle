@@ -14,8 +14,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class WordpressTerminateEventListener implements EventSubscriberInterface
 {
-    public function __construct(private readonly EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        private readonly EventDispatcherInterface $dispatcher
+    ) {
     }
 
     public static function getSubscribedEvents(): array

@@ -23,7 +23,10 @@ final class SwordExtension extends ConfigurableExtension implements PrependExten
     public function prepend(ContainerBuilder $container): void
     {
         $swordConfig = $container->getExtensionConfig('sword');
-        $prioritizedConfigNames = array_diff(['security', 'doctrine'], $swordConfig[0]['overridden_configurations'] ?? []);
+        $prioritizedConfigNames = array_diff(
+            ['security', 'doctrine'],
+            $swordConfig[0]['overridden_configurations'] ?? []
+        );
         $prioritizedConfigs = [];
         $extensions = $container->getExtensions();
 
@@ -39,7 +42,7 @@ final class SwordExtension extends ConfigurableExtension implements PrependExten
 
                 $prioritizedConfigs[$name][] = $config;
             } else {
-                if($name === 'doctrine') {
+                if ($name === 'doctrine') {
                     $config = $this->mergeDoctrineConfig($container, $config);
                 }
 
@@ -119,7 +122,7 @@ final class SwordExtension extends ConfigurableExtension implements PrependExten
         bool $reverse = false,
     ): void {
         $originalConfig = $container->getExtensionConfig($name);
-        if (!count($originalConfig)) {
+        if (!\count($originalConfig)) {
             $originalConfig[] = [];
         }
 
@@ -143,12 +146,12 @@ final class SwordExtension extends ConfigurableExtension implements PrependExten
     private function mergeDistinct(array $first, array $second): array
     {
         foreach ($second as $index => $value) {
-            if (is_int($index) && !in_array($value, $first, true)) {
+            if (\is_int($index) && !\in_array($value, $first, true)) {
                 $first[] = $value;
-            } elseif (!array_key_exists($index, $first)) {
+            } elseif (!\array_key_exists($index, $first)) {
                 $first[$index] = $value;
-            } elseif (is_array($value)) {
-                if (is_array($first[$index])) {
+            } elseif (\is_array($value)) {
+                if (\is_array($first[$index])) {
                     $first[$index] = $this->mergeDistinct($first[$index], $value);
                 } else {
                     $first[$index] = $value;
