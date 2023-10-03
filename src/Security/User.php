@@ -6,12 +6,13 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Sword\SwordBundle\Entity\WordpressEntityInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[ORM\Table('users')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, WordpressEntityInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, WordpressEntityInterface, EquatableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
@@ -225,5 +226,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Wordpre
     public function getPassword(): ?string
     {
         return $this->getPass();
+    }
+
+    public function isEqualTo(UserInterface $user): bool
+    {
+        if ($user instanceof self) {
+            $isEqual =
+                \count($this->getRoles()) === \count($user->getRoles())
+                && \count($this->getCapabilities()) === \count($user->getCapabilities())
+            ;
+
+            if ($isEqual) {
+                foreach ($this->getRoles() as $role) {
+                    $isEqual = $isEqual && \in_array($role, $user->getRoles(), true);
+                }
+
+                foreach ($this->getCapabilities() as $capability) {
+                    $isEqual = $isEqual && \in_array($capability, $user->getCapabilities(), true);
+                }
+            }
+
+            return $isEqual;
+        }
+
+        return false;
     }
 }

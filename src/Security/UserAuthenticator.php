@@ -107,6 +107,8 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
         }
 
         $this->tokenStorage->setToken();
+        $this->requestStack->getSession()
+            ->invalidate();
 
         throw new WordpressLougoutSuccessfulException($response);
     }
