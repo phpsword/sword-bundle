@@ -4,23 +4,19 @@ declare(strict_types=1);
 
 namespace Sword\SwordBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Sword\SwordBundle\Entity\WordpressEntityInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class WordpressTablePrefixEventListener implements EventSubscriberInterface
+#[AsDoctrineListener(event: Events::loadClassMetadata)]
+final class WordpressTablePrefixEventListener
 {
     public function __construct(
         #[Autowire('%sword.table_prefix%')] private readonly string $prefix
     ) {
-    }
-
-    public function getSubscribedEvents(): array
-    {
-        return [Events::loadClassMetadata];
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $args): void
