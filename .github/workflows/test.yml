@@ -85,7 +85,7 @@ jobs:
         strategy:
             matrix:
                 php: ['8.1']
-                symfony: ['6.1', '6.2', '6.3']
+                symfony: ['6.1', '6.2', '6.3', '6.4']
 
         steps:
             -   uses: FranzDiebold/github-env-vars-action@v2
@@ -125,11 +125,11 @@ jobs:
                     git config --global user.name "Sword"
                     symfony new newproject --webapp --version="${{ matrix.symfony }}"
                     cd newproject
+                    composer remove symfony/asset-mapper
                     cp -Rp . ../
                     cd ..
                     rm -rf newproject
-                    rm composer.lock
-                    rm docker-compose*
+                    rm -f composer.lock docker-compose* compose.yaml compose.override.yaml
                     echo "APP_NAME=sword" >> .env
                     echo "PROJECT_DIR=${PWD##*/}" >> .env
                     echo "MAILER_DSN=smtp://mailer:25" >> .env
@@ -145,9 +145,7 @@ jobs:
                     composer config --no-interaction --json extra.installer-paths.wp/content/themes/{\$name}/ '["type:wordpress-theme"]'
                     composer config --no-interaction extra.symfony.allow-contrib true
                     composer config --no-interaction extra.wordpress-install-dir "wp/core"
-                    composer require --no-interaction phpsword/sword-bundle johnpbloch/wordpress wpackagist-plugin/akismet wpackagist-theme/twentytwentytwo
-                    composer require --no-interaction --dev ergebnis/composer-normalize roave/security-advisories:dev-latest
-                    composer normalize --no-interaction
+                    composer require --no-interaction phpsword/sword-bundle johnpbloch/wordpress wpackagist-plugin/akismet wpackagist-theme/twentytwentyfour
                     rm bin/console
                     cp vendor/phpsword/sword-bundle/install/docker-compose.yml docker-compose.yml
                     cp vendor/phpsword/sword-bundle/install/docker-compose.prod.yml docker-compose.prod.yml
