@@ -82,6 +82,8 @@ final class WordpressLoader implements EventSubscriberInterface
             $_SERVER['PHP_SELF'] = '/' . $urlPathName;
         }
 
+        $_SERVER['SCRIPT_FILENAME'] = $entryPoint;
+
         try {
             require_once $entryPoint;
         } catch (WordpressLoginSuccessfulException $exception) {
