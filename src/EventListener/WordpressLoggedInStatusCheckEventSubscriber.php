@@ -21,6 +21,8 @@ final class WordpressLoggedInStatusCheckEventSubscriber implements EventSubscrib
         private readonly UserReauthenticator $userReauthenticator,
         #[Autowire('%sword.app_namespace%')]
         private readonly string $appNamespace,
+        #[Autowire('%sword.wordpress_host%')]
+        private readonly ?string $wordpressHost,
     ) {
     }
 
@@ -45,7 +47,9 @@ final class WordpressLoggedInStatusCheckEventSubscriber implements EventSubscrib
             return;
         }
 
-        $cookieName = 'wordpress_logged_in_' . md5($event->getRequest()->getSchemeAndHttpHost());
+        $host = $this->wordpressHost ?? $event->getRequest()
+            ->getSchemeAndHttpHost();
+        $cookieName = 'wordpress_logged_in_' . md5($host);
 
         if (\array_key_exists($cookieName, $event->getRequest()->cookies->all())) {
             $this->wordpressLoader->loadWordpress();
@@ -59,7 +63,10 @@ final class WordpressLoggedInStatusCheckEventSubscriber implements EventSubscrib
             }
 
             $this->userReauthenticator->reauthenticate();
-            $event->setResponse(new RedirectResponse($event->getRequest()->getRequestUri()));
+
+            if (str_starts_with($controller, 'Sword\\SwordBundle\\')) {
+                $event->setResponse(new RedirectResponse($host . $event->getRequest()->getRequestUri()));
+            }
         }
     }
 }
