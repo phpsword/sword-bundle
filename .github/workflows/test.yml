@@ -150,10 +150,9 @@ jobs:
                     cp vendor/phpsword/sword-bundle/install/docker-compose.yml docker-compose.yml
                     cp vendor/phpsword/sword-bundle/install/docker-compose.prod.yml docker-compose.prod.yml
                     cp vendor/phpsword/sword-bundle/install/bin/console bin/console
-                    sed -i 's/PHP_VERSION: 8.1-dev/PHP_VERSION: ${{ matrix.php }}-dev/' docker-compose.yml
-                    sed -i 's@/etc/php81/conf.d@/etc/php${{ matrix.php }}/conf.d@' docker-compose.yml
+                    sed -i "s/PHP_VERSION: 8.1-dev/PHP_VERSION: ${{ matrix.php }}-dev/" docker-compose.yml
                     php_version=$(echo ${{ matrix.php }} | tr -d '.')
-                    sed -i 's@/etc/php${{ matrix.php }}/conf.d@/etc/${php_version}/conf.d@' docker-compose.yml
+                    sed -i "s@/etc/php81/conf.d@/etc/php$php_version/conf.d@" docker-compose.yml
                     
                     # Remove symlink and copy actual files so it gets copied later in the installer image
                     rm vendor/phpsword/sword-bundle
@@ -184,5 +183,4 @@ jobs:
                     [ "$url" = "https://testproject.localhost/wp-admin/install.php" ]
 
             -   name: Check PHP version
-                run: |
-                    docker compose exec -it php php -v | grep "PHP ${{ matrix.php }}"
+                run: cd testproject && docker compose exec php php -v | grep "PHP ${{ matrix.php }}"

@@ -22,7 +22,7 @@ final class WordpressLoggedInStatusCheckEventSubscriber implements EventSubscrib
         #[Autowire('%sword.app_namespace%')]
         private readonly string $appNamespace,
         #[Autowire('%sword.wordpress_host%')]
-        private readonly ?string $wordpressHost,
+        private readonly string $wordpressHost,
     ) {
     }
 
@@ -47,7 +47,7 @@ final class WordpressLoggedInStatusCheckEventSubscriber implements EventSubscrib
             return;
         }
 
-        $host = $this->wordpressHost ?? $event->getRequest()
+        $host = $this->wordpressHost ?: $event->getRequest()
             ->getSchemeAndHttpHost();
         $cookieName = 'wordpress_logged_in_' . md5($host);
 
