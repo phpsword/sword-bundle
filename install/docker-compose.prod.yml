@@ -5,6 +5,8 @@ services:
         build:
             context: .
             dockerfile: docker/dk.php.Dockerfile
+            args:
+                PHP_VERSION: 8.1
         image: 'changeme/changeme-php:staging'
         restart: 'no'
         environment:
