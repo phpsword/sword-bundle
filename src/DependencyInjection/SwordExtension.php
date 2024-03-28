@@ -84,6 +84,7 @@ final class SwordExtension extends ConfigurableExtension implements PrependExten
         $container->setParameter('sword.public_services', $mergedConfig['public_services']);
         $container->setParameter('sword.widgets_path', $mergedConfig['widgets_path']);
         $container->setParameter('sword.app_namespace', $mergedConfig['app_namespace']);
+        $container->setParameter('sword.wordpress_host', $mergedConfig['wordpress_host']);
 
         if ($mergedConfig['widgets_path'] && file_exists($mergedConfig['widgets_path'])) {
             $definition = (new Definition())

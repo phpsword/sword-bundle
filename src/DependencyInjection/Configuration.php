@@ -21,6 +21,7 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('app_namespace')->defaultValue('App\\')->end()
                 ->scalarNode('widgets_namespace')->defaultValue('App\\Widget\\')->end()
                 ->scalarNode('widgets_path')->defaultValue('%kernel.project_dir%/src/Widget/')->end()
+                ->scalarNode('wordpress_host')->defaultValue('')->end()
                 ->arrayNode('overridden_configurations')
                     ->scalarPrototype()->end()
                 ->end()
