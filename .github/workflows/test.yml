@@ -44,7 +44,7 @@ jobs:
 
         strategy:
             matrix:
-                php: ['8.1', '8.2', '8.3']
+                php: ['8.2', '8.3']
 
         steps:
             -   uses: actions/checkout@v4
@@ -85,7 +85,10 @@ jobs:
         strategy:
             matrix:
                 php: ['8.1', '8.2', '8.3']
-                symfony: ['6.1', '6.2', '6.3', '6.4']
+                symfony: ['6.1.*', '6.2.*', '6.3.*', '6.4.*', '7.0.*']
+                exclude:
+                    - php: '8.1'
+                      symfony: '7.0.*' # Requires PHP >= 8.2 for compatibility
 
         steps:
             -   uses: FranzDiebold/github-env-vars-action@v2
@@ -125,7 +128,6 @@ jobs:
                     git config --global user.name "Sword"
                     symfony new newproject --webapp --version="${{ matrix.symfony }}"
                     cd newproject
-                    composer remove symfony/asset-mapper
                     cp -Rp . ../
                     cd ..
                     rm -rf newproject
