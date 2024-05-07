@@ -53,8 +53,7 @@ services:
             - traefik.http.services.${APP_NAME:-sword}.loadbalancer.server.port=80
 
     mysql:
-        image: mysql:8
-        command: --default-authentication-plugin=mysql_native_password
+        image: mysql:8.0.37
         restart: 'no'
         environment:
             - MYSQL_USER=user
@@ -83,7 +82,7 @@ services:
             - traefik.tcp.services.${APP_NAME:-sword}-smtp.loadbalancer.server.port=1025
 
     traefik:
-        image: traefik:2.9
+        image: traefik:2.11
         ports:
             - '443:443'
         volumes:

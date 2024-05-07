@@ -175,7 +175,7 @@ jobs:
                     docker run --rm -t -e HOST_PWD="$PWD" \
                         -v "$PWD":/app -v /var/run/docker.sock:/var/run/docker.sock \
                         projectinstaller testproject -v
-                    sleep 20
+                    sleep 30
 
             -   name: Check that website is up and running
                 run: |
