@@ -5,8 +5,6 @@ namespace Sword\SwordBundle\Security;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Sword\SwordBundle\Controller\Routes;
 use Sword\SwordBundle\Event\WooCommerceRegistrationEvent;
-use Sword\SwordBundle\Exception\WordpressLoginSuccessfulException;
-use Sword\SwordBundle\Exception\WordpressLougoutSuccessfulException;
 use Sword\SwordBundle\Service\WordpressService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -107,10 +105,11 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
         }
 
         $this->tokenStorage->setToken();
-        $this->requestStack->getSession()
-            ->invalidate();
-
-        throw new WordpressLougoutSuccessfulException($response);
+        
+        $session = $this->requestStack->getSession();
+        
+        $session->invalidate();
+        $session->set('logoutSuccessResponse', $response);
     }
 
     public function onWooCommerceRegister(int $customerId, array $newCustomerData, bool $passwordGenerated): void
@@ -129,19 +128,19 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
         }
 
         return $this->wordpressUsername && $this->wordpressPassword && \in_array(
-            $request->getPathInfo(),
-            [$this->getLoginUrl($request), '/wp-login.php'],
-            true,
-        );
+                $request->getPathInfo(),
+                [$this->getLoginUrl($request), '/wp-login.php'],
+                true,
+            );
     }
 
     public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
     {
         $url = '/wp-login.php?' . http_build_query([
-            'redirect_to' => $request->getUri(),
-            'reauth' => 0,
-        ]);
-
+                'redirect_to' => $request->getUri(),
+                'reauth' => 0,
+            ]);
+        
         return new RedirectResponse($url, 302);
     }
 
@@ -210,13 +209,15 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator implements Wordpr
 
         return null;
     }
-
-    private function onWordpressLoginSuccess(): never
+    
+    private function onWordpressLoginSuccess(): void
     {
-        throw new WordpressLoginSuccessfulException(
-            $this->wordpressUsername,
-            $this->wordpressPassword,
-            $this->wordpressRememberMe,
-        );
+        $session = $this->requestStack->getSession();
+        
+        $session->set('loginSuccessData', [
+            'username' => $this->wordpressUsername,
+            'password' => $this->wordpressPassword,
+            'rememberMe' => $this->wordpressRememberMe,
+        ]);
     }
 }

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Sword\SwordBundle\Loader;
 
 use Sword\SwordBundle\Event\WooCommerceRegistrationEvent;
-use Sword\SwordBundle\Exception\WordpressLoginSuccessfulException;
-use Sword\SwordBundle\Exception\WordpressLougoutSuccessfulException;
 use Sword\SwordBundle\Security\UserAuthenticator;
 use Sword\SwordBundle\Store\WordpressWidgetStore;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -55,7 +53,8 @@ final class WordpressLoader implements EventSubscriberInterface
     public function createWordpressResponse(string $urlPathName): Response
     {
         $request = $this->requestStack->getCurrentRequest();
-
+        $session = $this->requestStack->getSession();
+        
         ob_start();
         $obLevel = ob_get_level();
 
@@ -65,9 +64,9 @@ final class WordpressLoader implements EventSubscriberInterface
         foreach (WordpressGlobals::GLOBALS as $global) {
             global $$global;
         }
-
+        
         $entryPoint = $this->wordpressDirectory . '/index.php';
-
+        
         if (\in_array(basename($urlPathName), ['wp-login.php', 'wp-signup.php', 'wp-comments-post.php'], true)) {
             $_SERVER['PHP_SELF'] = '/' . basename($urlPathName);
             $entryPoint = $this->wordpressDirectory . '/' . basename($urlPathName);
@@ -75,20 +74,31 @@ final class WordpressLoader implements EventSubscriberInterface
             if ($urlPathName === 'wp-admin/') {
                 $urlPathName = 'wp-admin/index.php';
             }
-
+            
             $_SERVER['PHP_SELF'] = '/' . $urlPathName;
             $entryPoint = $this->wordpressDirectory . '/' . $urlPathName;
         } else {
             $_SERVER['PHP_SELF'] = '/' . $urlPathName;
         }
-
+        
         $_SERVER['SCRIPT_FILENAME'] = $entryPoint;
-
-        try {
-            require_once $entryPoint;
-        } catch (WordpressLoginSuccessfulException $exception) {
-            return $this->getAuthResponse($exception->username, $exception->password, $exception->rememberMe);
-        } catch (WordpressLougoutSuccessfulException) {
+        
+        require_once $entryPoint;
+        
+        if ($session->has('loginSuccessData')) {
+            $loginData = $session->get('loginSuccessData');
+            $session->remove('loginSuccessData');
+            return $this->getAuthResponse(
+                $loginData['username'],
+                $loginData['password'],
+                $loginData['rememberMe']
+            );
+        }
+        
+        if ($session->has('logoutSuccessResponse')) {
+            $response = $session->get('logoutSuccessResponse');
+            $session->remove('logoutSuccessResponse');
+            
             return new RedirectResponse($this->userAuthenticator->getLoginUrl($request));
         }
 
@@ -120,7 +130,7 @@ final class WordpressLoader implements EventSubscriberInterface
 
         require_once $this->wordpressDirectory . '/wp-load.php';
     }
-
+    
     private function getAuthResponse(string $username, string $password, bool $rememberMe): RedirectResponse
     {
         $session = $this->requestStack->getSession();
